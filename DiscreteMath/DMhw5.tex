@@ -1,0 +1,188 @@
+ \documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{enumerate}
+
+\title{Discrete Math Assigment 5}
+\author{Rachel Hwang}
+
+\begin{document}
+\maketitle
+
+\emph{Collaborated with Andrew Ding.}
+\begin{enumerate}
+\item \emph{A fair (unbalanced) coin is tossed repeatedly until the first time we see the combination HEAD TAIL (in this order, but not necessarily
+consecutively). Calculate the distribution of the number of tosses, i.e.
+give a closed form expression for the probability that their number in
+this experiment is equal to $k$ for any integer $k \geq 2$.} \\
+\\
+Given a fair coin, $p(H) = p(T) = 0.5$. By the definition of geometric distribution, the probability that we will see H after $n$ tosses is 
+\begin{align}
+\nonumber p(T_1\dots T_nH) &= (1-p(H))^n \cdot p(H)\\
+\nonumber &= (1-p(T))^n \cdot p(T) = p(H_1\dots H_nT)
+\end{align}
+Since tossing some number $n$ TAILs and a HEAD will have no effect on our probability of tossing $m$ HEADs, $p(T_1\dots T_{n}H)$ and $p(H_{1}\dots H_{m}T)$ are independent. By the definition of independence, we know that 
+\begin{align}
+\nonumber p((T_1\dots T_{n}H) \land (H_{1}\dots H_{m}T)) = p(T_1\dots T_{n}H) \cdot p(H_{1}\dots H_{m}T)
+\end{align}
+We want to find the expression for the probability of that event given $k$ number of tosses total. We must take into account all cases $p(T_1\dots T_{i}H) \cdot p(H_{1}\dots H_{j}T)$ where $i+j+2=k$, since any positive values of $i$ and $j$ are valid as long as we get a total of $k$ tosses. Therefore in $k$ coinflips, where $k \geq 2$ and $i+j+2=k$,
+\begin{align}
+\nonumber\displaystyle p((T_1\dots T_{i}H) \land (H_1\dots H_{j}T)) &= \sum\limits_{i=0}^{k-2}(1-p(H))^i \cdot p(H) \cdot (1-p(T))^{k-2-i} \cdot p(T) \\
+\nonumber\displaystyle &= \sum\limits_{i=0}^{k-2} 0.25 \cdot (0.5)^i \cdot (0.5)^{k-2-i} \\
+\nonumber &= (k-1) \cdot (0.5)^{k}
+\end{align}
+\\
+
+
+
+
+
+\item \emph{You roll three fair dice. Compute the expectation of the maximum of the three results, and the expectation of their minimum.} \\
+\\
+We will use the expectation theorem:
+\begin{align}
+\nonumber\displaystyle E(X) = \sum\limits_{r \in X(S)} p(X = r)r
+\end{align}
+Given a three dice rolls represented as an ordered triplet $(i,j,k)$ and $X_{max}$ such that $X_{max}((i,j,k)) = max(i,j,k)$, to use the expectation formula, we need $p(X = r)$ for all $1 \leq r \leq 6$. \\
+\\
+To find $p(X_{max} = r)$: given $(i,j,k)$ let $E$ be the event that $i = r$ and $j,k \leq r$, $F$ be the event that $j = r$ and $i,k \leq r$, and $G$ be the event that $k = r$ and $i,j \leq r$. We want to find $p(E \cup F \cup G)$. Using the inclusion-exclusion principle,
+\begin{align}
+\nonumber p(E \cup F \cup G) = p(E) + p(F) + p(G) - p(E \cap F) - p(E \cap G) - p(G \cap F) + p(E \cap F \cap G)
+\end{align}
+The denominator in our probability calculations is the total number of unique ordered triplets, $6 \cdot 6 \cdot 6$. The numerator will be the number of ordered triplets which satisfy our event expression. \\
+$p(E) = p(F) = p(G) = r^2/6^3$, since in the numerator, we have a fixed value for one variable, and r choices for the other two, $1 \cdot r \cdot r$.\\
+$p(E \cap F) = p(E \cap G) = p(G \cap F) = r/6^3$, since in the numerator we have a fixed value for two variables and r for the last one, $1 \cdot 1 \cdot r$. \\ 
+$p(E \cap F \cap G) = 1/6^3$, since in the numerator, there is only  triplet (r,r,r). \\
+\\
+Plugging in these values, 
+\begin{align}
+\nonumber\displaystyle p(E \cup F \cup G) = \frac{3r^2 - 3r + 1}{6^3} = p(X_{max} = r)
+\end{align}
+Plugging this probability into the expectation equations, we get that the expectation of the maximum is
+\begin{align}
+\nonumber\displaystyle E(X_{max}) = \sum\limits_{r \in X(S)} \frac{(3r^2 - 3r + 1) \cdot r}{6^3} = \frac{119}{24} \approx 4.96
+\end{align}
+To find the expected value of the minimum, we do essentially the same calucations, except that the probabilities are different | every place where we previously used an $r$, we now want to use ($7-r$) because where we previously wanted to find values less than or equal to $r$, now we want values greater than or equal to $r$. For example, in finding $p(i = r, j \geq r, k \geq r)$, we count $(7-r)^2$ valid triplets since we have a fixed value for $i$ and $7-r$ choices for each $j, k$. \\
+\\
+To get $p(X_{min} = r)$, we can therefore substitute ($7-r$) for $r$ in our previous probability expression. Again using the expectation equation, we get 
+\begin{align}
+\nonumber\displaystyle E(X_{min}) = \sum\limits_{r \in X(S)} \frac{(3(7-r)^2 - 3(7-r) + 1) \cdot r}{6^3} = \frac{49}{24} \approx 2.041
+\end{align}
+\\
+
+
+
+\item \emph{For a function $f: [n] \longrightarrow [n]$, let us define its inverse complexity ic(f) as the number of ordered pairs such that $i < j$ and $f(j) \leq f(i)$. Prove that}
+\begin{align}
+\nonumber\displaystyle p\left( ic(f) \geq \frac{n^2}{3}\right) \leq \frac{3}{4}
+\end{align}
+\emph{where f is chosen uniformly at random from the set of all functions.} \\
+\\
+Let random variable $X = ic(f)$. By the Markov bound theorem we discussed in class, we know that $p(X \geq a) \leq c/a$, where $c = E(X)$ and $a > 0$. So we know that 
+\begin{align*}
+p\left(X \geq \frac{n^2}{3}\right) \leq \frac{3\cdot E(X)}{n^2}
+\end{align*}
+To find $E(X)$, first let us count the number of valid choices of $i$ and $j$ such that $i < j$. There are $n$ valid values of $j$, and for each of those values, there are $n-1$ valid choices of $j$. Then we divide by two to account for the double-counting. So there are 
+\begin{align}
+\nonumber \displaystyle \frac{n(n-1)}{2}
+\end{align}
+ordered pairs $(i,\;j)$ such that $i < j$. \\
+\\
+We can consider $X$ to be the sum of $n$ bernouli variables that indicate whether or not a single ordered pair $(i, j)$, $i < j$ satisfies $f(j) \leq f(i)$. So $X = X_1 + \dots + X_m$, where $m = \frac{n(n-1)}{2}$. And thus, $E(X) = E(X_1 + \dots + X_m)$. By linearity of expectation, we also know that $E(X) = E(X_1) + \dots + E(X_m)$. Finally, because each $X_i$ is a bernoulli variable and the $E(Y) = \sum_{r \in Y(S)} p(Y = r)r$, because all $r \in {0,1}$, we know that $E(X_i) = p(X_i)$. So
+\begin{align*}
+E(x) = p(X_1) + \dots + p(X_m)
+\end{align*}
+Now we need $p(X_i)$. Now, for each ordered pair $X_i$, there are $\frac{1}{2}n(n+1)$ choices for the values of $f(i)$ and $f(j)$ where $f(j) \leq f(i)$, since we are adding the number of choices of $f(j)$ for all $f(i)$ which is $(n + \dots + 1) = \frac{1}{2}n(n+1)$. The total number of ordered pairs is of course $n^2$, $n$ choices for $f(i)$ and $n$ choices for $f(j)$. So \\
+\begin{align*}
+p(X_i) = \frac{n\cdot(n+1)}{2n^2}
+\end{align*}
+Therefore we can multiple $p(X_i)$ by $m$ to see that
+\begin{align*}
+E(X) = \frac{n\cdot(n+1)}{2n^2} \cdot \frac{n(n-1)}{2} = \frac{n^2(n+1)(n-1)}{4n^2} = \frac{n^2 - 1}{4n^2}
+\end{align*}
+Now plugging this value back into the Markov bound, we see that
+\begin{align*}
+p\left(X \geq \frac{n^2}{3}\right) \leq \frac{3\cdot (n^2 -1)}{4n^4} \leq \frac{3}{4}
+\end{align*}
+\\
+
+
+\item\emph{The mean deviation MD(X) of a random variable X is defined as $E(|X-c|)$, where c = E(X) is the expectation of X (we briefly discussed this notion in class, and demoted it).}
+	\begin{enumerate}[(a)]
+	\item \emph{Prove that for any two random variables X and Y on the same sample space, $MD(X + Y) \leq MD(X) + MD(Y)$.} \\
+    \\
+    Let $c = E(X)$ and $d = E(Y)$. By the definition of MD, then by the linearity of expectation
+    \begin{align*}
+MD(X + Y) &= E(|(X+Y) - E(X+Y)|) \\ 
+&= E(|(X+Y) - E(X)-E(Y)|) \\ 
+&= E(|(X+Y) - c - d|) \\
+&= E(|(X-c) + (Y -d)|) \\
+\\
+MD(X) + MD(Y) &= E(|X-c|)+ E(|Y-d|) \\
+&= E(|X-c|+|Y-d|) \\
+\end{align*}
+The triangle inequality states that $|a+b| \leq |a|+|b|$ for all $a,b$. so we know that 
+\begin{align*}
+E(|(X-c) - (Y -d)|) \;&\leq\; E(|X-c|+|Y-d|) \\
+MD(X+Y) \;&\leq\; MD(X) + MD(Y) \\
+\end{align*}
+
+	\item \emph{Prove that if X and Y are additionally known to be independent, then this inequality is always strict, unless one of the variables X,Y is trivial (that is, takes one fixed value with probability 1).} \\
+        \\
+        In order to get a strict inequality, we must show that 
+        \begin{align*}
+ E(|(X-c)+(Y-d)|) \;&\neq\; E(|X-c|+|Y-d|)
+%MD(X+Y) \;&\neq\; MD(X) + MD(Y) \\
+\end{align*}
+	We know that for some $a$ and $b$, $|a+b| = |a| + |b|$ iff $a,b >0$ or $ a,b < 0$ or $a \cdot b = 0$. Since we are working with non-trivial random variables, we want to show that there exists some values of $(X-c)$ and $(Y-d)$ such that they have different signs. \\
+    \\
+    Since $c$ is the mean value for $X$, we know that there must be must be values of $X$ both greater than and less than $c$ (since we're using non-trival values). Therefore $p(X < c) > 0$. Similarly, since $d$ is the mean value for $Y$, we know that there must be must be values of $Y$ both greater than and less than $d$. So $p(Y > d) > 0$. \\
+    \\
+        If $X$ and $Y$ are independent then from lecture, we know that $p(X < c) \cdot p(Y < d) = p((X < c) \;\land\; (Y > d))$. Since $p(X < c)$ and $p(Y < d)$ are both non-zero, $p((X < c) \;\land\; (Y > d)) > 0$. This tells us that there \emph{are} some values of $(X-c)$ and $(Y-d)$ such that they have different signs. Therefore,
+                \begin{align*}
+ E(|(X-c)+(Y-d)|) \;&\neq\; E(|X-c|+|Y-d|) \\
+MD(X+Y) \;&<\; MD(X) + MD(Y)
+\end{align*}
+        
+        
+        
+	\end{enumerate}
+
+
+
+
+
+\item \emph{Let f be picked uniformly at random from the set of all functions from $[n]$ to $[n]$. Give a closed form expression for the variance of the random variable $|im(f)|$.} \\
+\\
+Let our sample space $S$ be the set of all functions $f$ from $[n]$ to $[n]$. We know that $|S| = n^n$. Let the random variable $|im(f)|$ be called $X$. for $i \in [n]$, $X_i = 0$ if $i \notin im(f)$ and $X_i = 1$ if $i \in im(f)$. \\
+\\
+We know that $E(X_i) = 1 - (1- \frac{1}{n})^n$, so because $X_i$ si a bernoulli variable, we know that $E(X_i^2) =  1 - (1- \frac{1}{n})^n$. Therefore, 
+\begin{align*}
+Var(X) = \left(1-\frac{1}{n}\right)^n \left(1-\left(1- \frac{1}{n}\right)^n\right) = \left(1- \frac{1}{n}\right)^n - \left(1- \frac{1}{n}\right)^{2n}
+\end{align*}
+Since $X_i$ are not mutually independent, we will have to calculate covariances. We know that $Covar(X_i,X_j) = E(X_i,X_j) -E(X_i)E(X_j)$. Once again, because $X_i$ and $X_j$ are bernoulli variables, we just need to find $p(X_i \cap X_j)$ because we already know that $E(X_i) = (1 = \frac{1}{n})^n$. By the thereom from lecture, the variance of $X = E(X^2) - E(X)^2$.
+\begin{align*}
+Covar(X_i,X_j) &= E(X_i,X_j) -E(X_i)E(X_j) \\
+&= p(X_i \cap X_j) - p(X_i)p(X_j) \\
+&= \left(1- \frac{2}{n}\right)^n - \left(1 - \left(1- \frac{1}{n}\right)^n \right)^2  \\
+&= 2 \cdot \left(1- \frac{1}{n}\right)^n - \left(1- \frac{1}{n}\right)^{2n} + \left(1- \frac{2}{n}\right)^n
+\end{align*}
+And finally we can conclude that 
+\begin{align*}
+Var(X) &= \sum\limits_{i = 1}^{n}Var(X_i) + \sum\limits_{i \neq j}Covar(X_i,X_j) \\
+&= nVar(X_i) + \frac{n\cdot(n-1)}{2} Covar(X_i,X_j) \\
+&= n^2 \left(1- \frac{1}{n}\right)^n- \frac{n\cdot(n+1)}{2}\left(1- \frac{1}{n}\right)^{2n} + \frac{n\cdot(n-1)}{2}\left(1- \frac{2}{n}\right)^n \\
+\end{align*}
+
+
+
+
+\end{enumerate}
+\end{document}

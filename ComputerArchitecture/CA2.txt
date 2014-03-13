@@ -1,0 +1,41 @@
+Computer Architecture
+    - Hardware tech
+    - Applications
+    - Operating Systems
+    - Programming Languages
+    - Compiler Tech
+    - Compatibility
+    
+How do we decide what's a good computer architecture?
+    - Design drives implementation which drives design.
+    - Response Time: how long it takes to do a task.
+    - Throughput: total work done per time unit.
+    - Relative Performance: Performance = 1/Execution time
+
+    Measuring exectuotuion time: 
+        - Elapsed Time = total response time (processing, I/O, idle time,
+	  determines system performance. 
+	- CPU Time = time spent processing a given job (discounts I/O, other
+	  jobs' shares)
+	
+CPU Clocks
+    - Operation of digital hardware governed by a constant-rate clock
+    - Clock period: duration of a clock cycle, ie. 500ps
+    - Clock frequency: cycles per second, ie. 2.0 GHz = 2000MHz
+
+    Example
+    
+    Computer A: 2GHz clock, 10s CPU Time
+    Computer B: Aim for 6s CPU time, can do faster clock, but causes 
+    1.2xclock cycles
+
+Instruction Count:
+    - For a program, determined by program, ISA and compiler
+    - Average cycles per instruction determined by CPU hardware
+    - Different instructions can have different CPI
+
+    - Stored Program
+    - Basic operations
+    - Flexible execution of operands
+    - Conditional execution
+

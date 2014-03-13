@@ -1,0 +1,56 @@
+10/1/13
+
+Deterministic Finite (State) Automata: 
+[languages accepted by the machine are called regular]
+    - Finite states
+    - Alphabet Z
+    - Start state
+    - Final states
+    - Input e Z
+    
+    M = ( Q => set of states,
+      	  Z => set of alphabet,
+	  delta => transition function [delta: Q x Z = Q, delta(p, a) = q]
+	  q0 => initial state
+	  F subset/eq Q => final state)
+
+    Example: Machine that accepts strings with an even number # of 1's & 0's
+
+        Four states: even/even, odd/even, odd/odd, even/odd
+
+    delta(p, w) = q
+
+    delta^: transitive closure of delta
+    delta^(q1, E[empty state]) = q
+
+    delta^(q1, a, W) = delta^(delta(q, a) w)
+
+    A string s e Z* is accepted by M if delta^(q0, x) e F
+    Language accepted by M, L(M) = {x | delta^(q0, x) e F}
+
+We say that a language L subset/eq Z* is regular if
+E DFA M st L = L(M)
+
+Nondeterministic finite state automaton:
+    M: a machine that accepts strings with contain either 
+       1) even 0's & even 1's or
+       2) three consequtive 0's
+
+   Does not require input symbols for state transitions and is capable of
+   transitioning to zero or two or more states for a given start state and 
+   input symbol. This distinguishes it from a deterministic finite automaton
+   (DFA), in which all transitions are uniquely determined and in which an
+   input symbol is required for all state transitions.
+
+   NFA: M = (Q, Z, delta, q0, F)
+   delta = Q x Z = P(Q)
+
+   delta^: transitive closure
+   delta^(q, empty) = {q}
+   delta^(q, w a) = {P | E gamma in delta^(q, w) st P e delta(gamma, a)}
+
+Theorem: DFA = NFA
+   Given any NFA M, E DFA N st L(N) = L(M)
+       M = (Q, Z, delta, q0, F)
+       N = (^Q[P(Q)], Z, delta^, {q0}, {S subset/eq Q| (S intersect F != NULL)})
+

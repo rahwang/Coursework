@@ -1,0 +1,31 @@
+List of files:
+
+To run
+- affixes.py
+- compounds.py
+
+Data
+- gold_standard.txt
+- Simple_Brown.txt
+- prefixes.txt
+- suffixes.txt
+
+Testing
+- testing/test_c.txt
+- testing/test_g.txt
+- testing/test_s.txt
+- testing/test_compounds.py
+
+Results
+- output.txt
+
+This is a simple program for identifying compounds.
+
+First, I run affixes.py collects a list of common strings (length 3-4) from the corpus that will be understood as affixes. For example, 'ions' appears frequently, at the end of words like 'congratulations'. (For the sake of run time, I collect prefixes and suffixes in seperate txt files to be read by the main program, rather than including this whole procedure.)
+
+Then I run compounds.py, which builds two dictionaries, one from the gold standard and one for the actual corpus, saving the index of the break/suspected break. In the gold standard, the break is the index of a '-' or space. In the case of the corpus compound dictionary, the break is a guess based on whether a division at that index produces two words that are in the corpus, but do not include a suffix or prefix. The program outputs all found compounds, followed by the precision and recall.
+
+Precision ~.8
+Recall ~.99
+
+In other words, excellent recall, but too generous of an algorithm. Looking for and excluding affixes, improved my precision by ~.3! Based on the false positives, I'm not sure how to significantly improve this algorithm. Many of the 'False Positives' are words do indeed seem to be compounds, but have not been identified as such in the gold standard.

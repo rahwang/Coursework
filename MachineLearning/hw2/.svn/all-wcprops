@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2
+END
+kernel_batch_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/kernel_batch_output.txt
+END
+linear.py
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/linear.py
+END
+train2k.databw.35
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/train2k.databw.35
+END
+predict.linear.batch
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/predict.linear.batch
+END
+kernel.py
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/kernel.py
+END
+hw2.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/hw2.pdf
+END
+kernel_linear_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/kernel_linear_output.txt
+END
+test200.databw.35
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/test200.databw.35
+END
+linear_batch_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/linear_batch_output.txt
+END
+predict.kernel.batch
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/predict.kernel.batch
+END
+linear_online_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/linear_online_output.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/README
+END
+train2k.label.35
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/rah1-cs254-win-14/!svn/ver/3/hw2/train2k.label.35
+END

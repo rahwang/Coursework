@@ -1,0 +1,8 @@
+Rachel Hwang (rah1)
+hw5
+
+1. To run eigP:
+   $ make
+   $ ./eigP [k val] [epsilon] [filename] [matrix dimension]
+
+The same format for svdP

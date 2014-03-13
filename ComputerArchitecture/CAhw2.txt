@@ -1,0 +1,518 @@
+Rachel Hwang
+CMSC 22201
+HW#2
+
+EXERCISE 2.15 (Set A)
+
+2.15.1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$t2 = 0x00FFA5A5
+    = 0000 0000 1111 1111 1010 0101 1010 0101
+      1111 1111 0000 0000 0101 1010 0101 1010
+-> $t1 = 0xFF005A5A
+
+2.15.2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nor $t1, $t2, $zero
+
+2.15.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+000000 01010 00000 01001 00000 100111
+OP     RS    RT    RD    SHAMT FUNC
+
+2.15.4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A is all 0's, so !A is all 1's, so B|!A is all 1's.
+A = 0xFFFFFFFF
+
+2.15.5 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nor $t1, $t1, $zero
+or $t1, $t1, $t2
+
+2.16.6 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(using answer for 2.15.5)
+000000 01001 00000 01001 00000 100111    #nor
+000000 01001 01010 01001 00000 100101    #or
+OP     RS    RT    RD    SHAMT FUNC
+
+
+EXERCISE 2.19 (Set A)
+
+2.19.1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FIB: 
+     slti $t0, $a0, 2	       # is n < 2?
+     beq  $a0, $zero, L1      # if n >= 2, go to L1
+     add  $v0, $a0, $zero     # return n
+     jr   $ra      	       
+L1:
+     addi $sp, $sp, -12       # adjust stack (push 3)
+     sw	  $ra, 4($sp)	       # save return address
+     sw	  $a0, 0($sp)	       # save arg n
+     addi $a0, $a0, -1	       # arg = n-1  
+     jal  FIB  	    	       # call FIB(n-1)
+     sw	  $v0, 0($sp)	       # save val of FIB(n-1)
+     addi $a0, $a0, -1	       # arg = n-2
+     jal  FIB  	    	       # call FIB(n-2)
+     lw	  $t0, 0($sp)	       # restore $t0
+     add  $v0, $v0, $t0       # return FIB(n-1) + FIB(n-2)
+     lw	  $a0, 4($sp)	       # restore arg n
+     lw   $ra, 8($sp)	       # restore return address
+     addi $sp, $sp, 12	       # adjust stack (pop 3)
+     jr	  $ra  	    	       # return to caller
+
+Total of 18 instructions.
+
+2.19.2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First, here is the inline version of the fib code that could be pasted
+ directly into another func.
+
+1.1: 
+     slti $t0, $a0, 2	       # is n < 2?
+     beq  $a0, $zero, 1.2     # if n >= 2, go to 1.2
+     add  $s0, $a0, $zero     # set $s0 = n
+     j    END      	       # exit
+1.2:
+     addi $a0, $a0, -1	       # arg = (n-1)  
+2A.1:
+     slti $t0, $a0, 2	       # is (n-1) < 2?
+     beq  $a0, $zero, 2A.2    # if (n-1) >= 2, go to 2A.2
+     add  $s0, $s0, $a0       # set $s0 += (n-1)
+     j    1.3      	       # exit back to top level
+2A.2:
+     addi $sp, $sp, -8        # adjust stack (push 2)
+     sw	  $ra, 4($sp)	       # save return address
+     sw	  $a0, 0($sp)	       # save arg (n-1)
+     addi $a0, $a0, -1	       # arg = (n-1)-1  
+     jal  FIB  	    	       # call FIB((n-1)-1)
+     add  $s0, $s0, $v0       # set $s0 += val of FIB((n-1)-1) 
+     addi $a0, $a0, -1	       # arg = (n-1)-2
+     jal  FIB  	    	       # call FIB((n-1)-2)
+     add  $s0, $s0, $v0	# set $s0 += val of FIB((n-1)-2) 
+     lw	  $a0, 4($sp)	       # restore arg (n-1)
+     lw   $ra, 8($sp)	       # restore return address
+     addi $sp, $sp, 8	       # adjust stack (pop 2)
+1.3:
+     addi $a0, $a0, -1	       # arg = (n-2)
+2B.1:
+     slti $t0, $a0, 2	       # is (n-2) < 2?
+     beq  $a0, $zero, 2B.2    # if (n-2) >= 2, go to 2B.2
+     add  $s0, $s0, $a0	# set $s0 += (n-2) 
+     j    END      	       # exit back to top level
+2B.2:
+     addi $sp, $sp, -8        # adjust stack (push 2)
+     sw	  $ra, 4($sp)	       # save return address
+     sw	  $a0, 0($sp)	       # save arg (n-2)
+     addi $a0, $a0, -1	       # arg = (n-2)-1  
+     jal  FIB  	    	       # call FIB((n-2)-1)
+     add  $s0, $s0, $v0       # set $s0 += val of FIB((n-2)-1) 
+     addi $a0, $a0, -1	       # arg = (n-2)-2
+     jal  FIB  	    	       # call FIB((n-2)-2)
+     add  $s0, $s0, $v0       # set $s0 += val of FIB((n-2)-2) 
+     lw	  $a0, 4($sp)	       # restore arg (n-2)
+     lw   $ra, 8($sp)	       # restore return address
+     addi $sp, $sp, 8	       # adjust stack (pop 2)
+END:
+     add $v0, $zero, $s0      # put $s0 val in $v0
+
+And here is the inlined function FIB that is called in the above code.
+
+FIB: 
+     addi $sp, $sp, -4	       # push 1 onto the stack
+     sw	  $s0, 0($sp)	       # save $s0
+     slti $t0, $a0, 2	       # is n < 2?
+     beq  $a0, $zero, 1.2     # if n >= 2, go to 1.2
+     add  $s0, $a0, $zero     # set $s0 = n
+     j    END      	       # exit
+1.2:
+     addi $a0, $a0, -1	       # arg = (n-1)  
+2A.1:
+     slti $t0, $a0, 2	       # is (n-1) < 2?
+     beq  $a0, $zero, 2A.2    # if (n-1) >= 2, go to 2A.2
+     add  $s0, $s0, $a0	# set $s0 += (n-1)
+     j    1.3      	       # exit back to top level
+2A.2:
+     addi $sp, $sp, -8        # adjust stack (push 2)
+     sw	  $ra, 4($sp)	       # save return address
+     sw	  $a0, 0($sp)	       # save arg (n-1)
+     addi $a0, $a0, -1	       # arg = (n-1)-1  
+     jal  FIB  	    	       # call FIB((n-1)-1)
+     add  $s0, $s0, $v0	# set $s0 += val of FIB((n-1)-1) 
+     addi $a0, $a0, -1	       # arg = (n-1)-2
+     jal  FIB  	    	       # call FIB((n-1)-2)
+     add  $s0, $s0, $v0	# set $s0 += val of FIB((n-1)-2) 
+     lw	  $a0, 4($sp)	       # restore arg (n-1)
+     lw   $ra, 8($sp)	       # restore return address
+     addi $sp, $sp, 8	       # adjust stack (pop 2)
+1.3:
+     addi $a0, $a0, -1	       # arg = (n-2)
+2B.1:
+     slti $t0, $a0, 2	       # is (n-2) < 2?
+     beq  $a0, $zero, 2B.2    # if (n-2) >= 2, go to 2B.2
+     add  $s0, $s0, $a0	# set $s0 += (n-2) 
+     j    END      	       # exit back to top level
+2B.2:
+     addi $sp, $sp, -8        # adjust stack (push 2)
+     sw	  $ra, 4($sp)	       # save return address
+     sw	  $a0, 0($sp)	       # save arg (n-2)
+     addi $a0, $a0, -1	       # arg = (n-2)-1  
+     jal  FIB  	    	       # call FIB((n-2)-1)
+     add  $s0, $s0, $v0	# set $s0 += val of FIB((n-2)-1) 
+     addi $a0, $a0, -1	       # arg = (n-2)-2
+     jal  FIB  	    	       # call FIB((n-2)-2)
+     add  $s0, $s0, $v0       # set $s0 += val of FIB((n-2)-2) 
+     lw	  $a0, 4($sp)	       # restore arg (n-2)
+     lw   $ra, 8($sp)	       # restore return address
+     addi $sp, $sp, 8	       # adjust stack (pop 2)
+END:
+     add  $v0, $zero, $s0     # put $s0 val in $v0
+     lw   $s0, 0($sp) 	       # restore original $s0
+     addi $sp, $sp, 4	       # pop 1 off stack
+     jr   $ra  	    	       # return to caller
+
+Just for fun, since I wrote this before realizing that I'd done it wrong,
+here is an iterative version of fibonacci.
+
+START:
+     addi $t0, $zero, 1	 # set counter = 1
+     addi $t1, $zero, 1	 # set prev = 1
+     add  $v0, $zero, $zero    # set res = 0
+     beq  $a0, $zero, EXIT     # if arg n == 0, exit (return 0)
+     addi $v0, $zero, 1        # set res = 1
+TOP:
+     slt  $t2, $t0, $a0	 # counter < arg n?
+     beq  $t2, $zero, EXIT     # if counter >= arg n, exit (return res)
+     add  $t2, $v0, $zero      # tmp = res
+     add  $v0, $v0, $t1	 # res = res + prev
+     add  $t1, $t2, $zero      # prev = tmp
+     addi $t0, $t0, 1	        # counter++
+     j	  TOP
+EXIT:
+
+2.19.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I really wasn't sure what the question was asking of me, so here is the stack 
+at what I consider the most logically important points in a call to FIB.
+
+~~~~~ BEFORE any call ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+$fp -> |                   | 
+       |                   |
+$sp -> |                   | <- 0x7ffffffc
+       +-------------------+ 
+       |                   |
+low address
+
+~~~~~ In call FIB(n) ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       |                   |
+       +-------------------+ 
+$fp -> | return addr ($ra) | <- 0x7ffffffc
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000000
+       +-------------------+
+$sp -> |                   | <- 0x80000004
+       +-------------------+
+       |                   |
+low address
+
+~~~~~ In call FIB(n-1) ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       | return addr ($ra) | <- 0x7ffffffc
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000000
+       +-------------------+
+$fp -> |                   | <- 0x80000004
+       +-------------------+ 
+       | return addr ($ra) | <- 0x8000000c
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000010
+       +-------------------+
+$sp -> |                   | <- 0x80000014
+       +-------------------+
+       |                   |
+low address
+
+~~~~~ Back in FIB(n) ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       |                   |
+       +-------------------+ 
+$fp -> | return addr ($ra) | <- 0x7ffffffc
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000000
+       +-------------------+
+$sp -> | FIB(n-1) ($v0)    | <- 0x80000004
+       +-------------------+
+       |                   |
+low address
+
+~~~~~ In call FIB(n-2) ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       | return addr ($ra) | <- 0x7ffffffc
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000000
+       +-------------------+
+$fp -> | FIB(n-1) ($v0)    | <- 0x80000004
+       +-------------------+ 
+       | return addr ($ra) | <- 0x8000000c
+       +-------------------+
+       | arg n ($a0)       | <- 0x80000010
+       +-------------------+
+$sp -> |                   | <- 0x80000014
+       +-------------------+
+       |                   |
+low address
+
+~~~~~ After FIB(n) returns to caller ~~~~~
+
+high address
+       |                   |
+$fp -> +-------------------+
+       |                   |
+$sp -> +-------------------+ <- 0x7ffffffc
+       |                   |
+low address
+
+2.19.4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+int f(int a, int b, int c, int d){
+    return func(func(a,b),c+d);
+}
+
+addi $sp, $sp, -4	# push 1 onto stack
+sw   $ra, 0($sp)	# save return address
+add  $s0, $a2, $a3	# set $s0 = c+d
+jal  FUNC	        # call func(a, b)
+add  $a0, $zero, $v0   # set arg #1 = val of func(a,b)
+add  $a1, $zero, $s0	# set arg #2 = c+d
+jal  FUNC      		# call func(func(a,b), c+d)
+lw   $ra, 0($sp)	# restore return address
+addi $sp, $sp, 4	# pop 1 from stack
+jr   $ra
+
+2.19.5 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We cannot use the tail-call optimization in this function, since f actually
+calls a different function: func. We are unable to eliminate recursion by
+implementing an iterative solution since func does something different from f.
+Also, to perform tail call, a function's return value must be the direct return
+value of another function.
+
+2.19.6 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+$t5 : Could be anything since its value is not preserved on call.
+$s3 : Value is preserved. Since we did not interact with it, its value was
+      whatever it was before f was called.
+$ra : Since we've restored it, $ra is the address of the next instruction in
+      the caller of f.
+$sp : Since we have popped everything we allocated off the stack, $sp is again
+      the address it was when f was first called.
+
+EXERCISE 2.21 (Set B)
+
+2.21.1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let z be saved in $s0.
+
+TOP:
+    addi $gp, $gp, 4		# push 1 onto stack
+    addi $t0, $zero, 100	# set $t0 = 100
+    sw   $t0, 0($gp) 		# save my_global (100) in static mem
+MAIN:
+    addi $sp, $sp, -4		# push 1 onto stack
+    sw	 $ra, 0($sp)		# save return address
+    lw   $t0, 0($gp)		# set $t0 = my_global
+    addi $t0, $t0, 1		# $t0 += 1
+    sw	 $t0, 0($gp)		# save my_global (101)
+    add	 $a0, $t0, $zero	# set arg #1 = my_global
+    jal  LEAF 	   		# call leaf_function(my_global)	 
+    add  $s0, $zero, $v0	# z = leaf_function(my_global)
+    lw 	 $ra, 0($sp) 		# restore return address
+    addi $sp, $sp, 4		# pop 1 from stack
+EXIT:
+
+LEAF:
+    addi $v0, $a0, 1		# return arg x + 1
+    jr 	 $ra
+
+2.21.2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~ BEFORE any call ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+$fp -> |                   | 
+       |                   |
+$sp -> |                   | <- 0x7ffffffc
+       +-------------------+ 
+       |                   |
+
+
+       |                   |
+       +-------------------+
+$gp -> |                   | <- 0x100008000
+       +-------------------+ 
+       |                   |
+low address
+
+~~~~~ In call to main ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       |                   | 
+       +-------------------+
+$fp -> |                   | <- 0x7ffffffc
+       +-------------------+
+$sp -> | return addr ($ra) | <- 0x80000000
+       +-------------------+ 
+       |                   |
+
+
+       |                   |
+       +-------------------+
+$gp -> | 101 ($t0)         | <- 0x100008004
+       +-------------------+ 
+       |                   | <- 0x100008000
+       +-------------------+
+       |                   |
+low address
+
+~~~~~ In call to leaf_function ~~~~~
+
+high address
+       |                   |
+       +-------------------+
+       |                   | 
+       +-------------------+
+       |                   | <- 0x7ffffffc
+       +-------------------+
+$fp -> | return addr ($ra) | <- 0x80000000
+       +-------------------+
+$sp -> | return addr ($ra) | <- 0x80000004
+       +-------------------+ 
+
+       |                   |
+
+
+       |                   |
+       +-------------------+
+$gp -> | 101 ($t0)         | <- 0x100008004
+       +-------------------+ 
+       |                   | <- 0x100008000
+       +-------------------+
+       |                   |
+low address
+
+
+2.21.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The MIPS code will be identical to the solution for 2.21.1
+
+2.21.4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This code does not save or restore the return address before making a call.
+(Also, after the tail call, the function does not return?)
+Can be fixed like this:
+
+f: 
+   addi $sp, $sp, -4	# push 1 onto stack
+   sw	$ra, 0($sp)	# save return address
+   add	$a2, $a3, $a2
+   slt  $a2, $a2, $a0
+   add  $v0, $a1, $zero
+   beq  $a2, $zero, L
+   jr 	$ra
+L: 
+   add  $a0, $a1, $zero
+   jal 	g		# Tail call
+   lw 	$ra, 0($sp) 	# restore return address
+   addi $sp, $sp, 4	# pop 1 from stack
+
+   (jr  $ra) <- I would assume.
+
+2.21.5 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We don't know how many arguments g() takes??
+
+int f(int a, int b, int c, int d) {
+    c += d;
+    if (c < a) {
+       return b;
+    }
+    return g(b);
+}
+
+2.21.6 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+f(1, 100, 1000, 30) = 500
+
+
+EXERCISE 2.38 (Set B)
+
+2.38.1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This instruction would be used to iterate through a string, searching for a 
+specific character. Checking if ECX is zero is checking for the null-terminating
+character at the end of a string.
+
+2.38.2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There appears to be a typo since there is no ECI defined in the problem. I
+assume ECI is actually ECX, which is being decremented, not incremented at
+each iteration.
+
+TOP:
+    andi $t0, $a3, 255	   # $t0 = least significant byte of $a3
+LOOP:
+    beq  $a0, $zero, END # if $a0 == 0, exit
+    lbu  $t1, 0($a1) 	  # $t1 = least significant byte of $a1
+    beq  $t0, $t1, END	  # if least byte of $a1 == least byte of $a3, exit 		
+    addi $a1, $a1, 1	  # $a1++
+    addi $a0, $a0, -1 	  # $a0--
+    j	 TOP  	   	  # Go back to TOP
+END:
+
+2.38.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When ECX is very large, only the number of cycles spent in each iteration of 
+the loop will be significant. Since the x86 version takes 3 cycles per iteration 
+(2 updates and 1 read) and the MIPS takes 6 cycles, the x86 version will be about
+100% faster, twice as fast as the MIPS version.
+
+2.38.4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let $a0 contain the base address of a[] and $a1 contain n.
+
+F:
+    add  $t0, $zero, $zero
+LOOP:
+    beq  $t0, $a1, EXIT
+    sll  $t1, $t0, 2
+    add  $t1, $t1, $a0
+    sw	 $zero, 0($t1)
+    addi $t0, $t0, 1
+    j 	 LOOP
+EXIT:
+    jr	$ra
+
+MIPS version: 8 instructions x 4 bytes = 32 bytes
+x86  version: 31 bytes
+About the same!
+
+
+Notes:
+- Followed textbook conversion for stack pointer incrementing.
+- Sorry about alignment. Formatting became weird and I'm out of time.

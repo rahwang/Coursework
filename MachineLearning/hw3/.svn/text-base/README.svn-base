@@ -1,0 +1,13 @@
+Rachel Hwang (rah1)
+
+Message passing implemented in "message-passing.c".
+Data collected with "getData.py", stored in "data.txt".
+Plots created with "plot.py"
+Additional test matrices: "test.data", "test2.data", "test3.data"
+
+
+Run with
+$ make (or make clean; make)
+$ ./message [INPUT-FILE] [N-VALUE] [THETA] [MU]
+
+ 

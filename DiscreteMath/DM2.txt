@@ -1,0 +1,9 @@
+Greedy algorithm
+
+Augmenting path algorithm
+
+Max-cut problem
+
+Turing halting problem.
+If A then go to N else go to M end.
+Undecidable property.

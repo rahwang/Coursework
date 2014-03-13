@@ -1,0 +1,82 @@
+ \documentclass[12pt]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=0.75in]{geometry}
+
+\title{Assignment 3}
+\author{Rachel Hwang}
+
+\begin{document}
+\maketitle
+
+\begin{itemize}
+\item{Exercise 0.1} \\
+\emph{Suppose L is a regular language with alphabet $\Sigma$. Give an algorithm to tell whether $L$ contains at least 100 strings.} \\
+\\
+If L is a regular language, there is exists some DFA $M = (Q,\Sigma,\delta,q_0,F)$ which describes it. The algorithm is as follows.
+\begin{enumerate}
+\item Begin with a counter = 0.
+\item For every state $s$ in $Q$, run Djisktra's algorithm on $M$ starting from $s$ to visit every state reachable from $s$. If no final state is reachable, color $s$ red. 
+\item Run a depth-first search on $M$. This search will visit every state in $Q$. If there is a non-red state in $Q$ that is accessible from itself via a path of non-red state (in its own path), stop searching since there are an infinite number of valid strings in $L(M)$. If there are no such cycles in $M$, then a depth-first search on $M$ is a straight-forward tree traversal. We may simple search from $q0$ and count all the non-red paths that terminate in final states, incrementing our counter for each one. If when our search terminates, our counter $\geq 100$, we have found more than 100 valid strings $L(M)$.
+\end{enumerate}
+\item{Exercise 0.2} \\
+\emph{If $w = a_1a_2\dots a_n$ and $x = b_1b_2\dots b_n$ are strings of the same length, define $alt(w, x)$ to be the string in which the symbols of $w$ and $x$ alternate, starting with $w$, that is, $a_1b_1a_2b_2 \dots a_nb_n$. If $L$ and $M$ are languages, define $alt(L, M)$ to be the set of strings of the form $alt(w, x)$, where $w$ is any string in $L$ and $x$ is any string in $M$ of the same length. Prove that if $L$ and $M$ are regular, so is $alt(L, M)$.} \\
+\\
+Let $a_i$ and $b_i$ be defined as the $i$th elements of $\Sigma_L$ and $\Sigma_M$ respectively, and $f$ and $g$ be homomorphisms where \\
+\\
+$f(a_i) = a_i$ \\
+$f(b_i) = \epsilon$ \\
+$g(b_i) = b_i$ \\
+$g(a_i) = \epsilon$ \\
+\\
+If we take $L' = f^{-1}(L)$, we will have the set of all strings created by taking each element in $L$ with every combination of $b \in \Sigma_M$ inserted between each letter. Similarly, $M' = g^{-1}(M)$ will give us the set of all strings created by taking each element in $M$ with every combination of $a \in \Sigma_L$ inserted between each letter. \\
+\\
+Since $L'$ by construction will only have strings with valid strings of $L$ embedded in them (interspered with some $b$'s) and $M'$ by construction will only have strings with valid strings of $M$ embedded, to get the set of all strings alt(L,M), we take the intersection of these sets intersected with the regular expression $(ab)^*$ (to ensure that we get only strings that are strictly alternating). So, \\
+\\
+$alt(L,M) = f^{-1}(L) \cap g^{-1}(M) \cap (ab)^*$ \\
+\\
+Since homomorphisms and regular expressions are closed under regularity, alt(L,M) is regular. \\
+\\
+
+\item{Exercise 0.3} \\
+\emph{If $L$ is a language, and $a$ is a symbol, then $a\setminus L$ is the set of strings $w$ such that $aw$ is in $L$. For example, if $L = \{a, aab, baa\}$ then $a\setminus L = \{\epsilon, ab\}$. Prove that if $L$ is regular, so is
+$a\setminus L$.} \\
+\\
+Let us define homomorphisms $f$ and $g$ such that \\
+$f(a) = a$ \\
+$f(\hat{a}) = a$ \\
+$g(a) = a$ \\
+$g(\hat{a}) = \epsilon$ \\
+\\
+Let $L' = f^{-1}(L)$. This will give us a language $L'$ that contains all the strings of $L$ and also all possible variants on those strings such that some number of $a$ in each string is substituted out with $\hat a$. For example, if $L = \{a, aab, baa\}$ then $L' = \{a, \hat a, aab, \hat aab, a\hat ab, \hat a\hat ab, baa, b\hat aa, ba\hat a, b\hat a\hat a\}$. Because regularity is closed under homomorphisms, $L'$ is regular. Now we can apply the regular expression $\hat a(a+b)^*$ to $L'$, which will return a set of strings $L''$ equal to $L$ except that for every string in $L$ $aw$, we now have instead $\hat aw$. Finally, we can apply the inverse of $g$ to $L''$. Taking $g^{-1}(L'')$ will replace all $\hat a$ with the empty string. Since by our construction in $L''$ $\hat a$ occurs only at the beginning of strings, we have created $a\setminus L$. \\
+\\
+$a\setminus L = g^{-1}(f(L)\cap (\hat a(a+b)^*))$ \\
+\\
+Because $L$ is regular and all the operations we have used, homomorphisms and regular expression, are closed under regularity, $a\setminus L$ is also regular.
+\item{Exercise 0.4} \\
+
+\begin{tabular}{c| c c c c c c c c}
+B & X &  &  &  &  &  &  &  \\
+C & X & X &  &  &  &  &  &  \\
+D & 0 & X & X &  &  &  &  &  \\
+E & X & 0 & X & X &  &  &  &  \\
+F & X & X & 0 & X & X &  &  &  \\
+G & 0 & X & X & 0 & X & X &  &  \\
+H & X & 0 & X & X & 0 & X & X &  \\
+I & X & X & 0 & X & X & 0 & X & X \\
+\hline
+  & A & B & C & D & E & F & G & H
+\end{tabular}
+
+So this system can actually be reduced to 3 states: $\{C, I, F\}\{B, E, H\}\{A, D, G\}$.
+\end{itemize}
+
+
+
+\end{document}

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/rah1-compling-win-13/!svn/ver/15/HW-6/testing
+END
+test_c.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/rah1-compling-win-13/!svn/ver/15/HW-6/testing/test_c.txt
+END
+test_s.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/rah1-compling-win-13/!svn/ver/11/HW-6/testing/test_s.txt
+END
+test_g.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/rah1-compling-win-13/!svn/ver/15/HW-6/testing/test_g.txt
+END
+test_compounds.py
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/rah1-compling-win-13/!svn/ver/11/HW-6/testing/test_compounds.py
+END

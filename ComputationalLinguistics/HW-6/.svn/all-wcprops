@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/rah1-compling-win-13/!svn/ver/15/HW-6
+END
+sample_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/rah1-compling-win-13/!svn/ver/8/HW-6/sample_output.txt
+END
+test_c.txt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/rah1-compling-win-13/!svn/ver/7/HW-6/test_c.txt
+END
+stest.txt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/rah1-compling-win-13/!svn/ver/10/HW-6/stest.txt
+END
+gold_standard.txt
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/rah1-compling-win-13/!svn/ver/7/HW-6/gold_standard.txt
+END
+prefixes.txt
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/rah1-compling-win-13/!svn/ver/10/HW-6/prefixes.txt
+END
+test_g.txt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/rah1-compling-win-13/!svn/ver/7/HW-6/test_g.txt
+END
+suffixes.txt
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/rah1-compling-win-13/!svn/ver/10/HW-6/suffixes.txt
+END
+affixes.py
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/rah1-compling-win-13/!svn/ver/10/HW-6/affixes.py
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/rah1-compling-win-13/!svn/ver/11/HW-6/README
+END
+Simple_Brown.txt
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/rah1-compling-win-13/!svn/ver/7/HW-6/Simple_Brown.txt
+END
+compounds.py
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/rah1-compling-win-13/!svn/ver/11/HW-6/compounds.py
+END
+output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/rah1-compling-win-13/!svn/ver/11/HW-6/output.txt
+END

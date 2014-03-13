@@ -1,0 +1,24 @@
+Elements of Computer Systems
+
+    Application Software
+    Operating System
+    Instruction Processor: x86, ARM, GPU, Accelerator
+    Hardware Technology: Logic gates, transistors
+
+BILLIONS of transistors in a 1.25cm by 1.25cm square.
+
+Interfaces = abstraction and set of operations
+
+ISA: Instruction Set Architecture
+ISA's form the notion os processor families: 386--486--Pentium--PII--PIII--PIV, PowerPC--G4, 68000--68020--68040, IBM 360, ARMv5---ARMv6--ARMv7
+
+Central issue in computer architecture is he design of interfaces to manage complexity while delivering performance.
+
+Brief intro to boolean logic and circuits for system designs
+-Boolean Algebra
+-Complete logic functions
+-DeMorgan's law/mathmatical properties
+
+
+Fan-in: # of inputs for a logic gate
+Fan-out: # of outputs for a logic gate

@@ -1,0 +1,17 @@
+Discrete math (combinatorics)
+
+Enumerative combinatorics
+Generating functions
+
+Close formed expression:
+
+How many binary strings of length n are there? 2^n
+
+Product rule: if a "procedure" P can be broken into m independent sub-tasks T1
+ ... TM st Ti can be performed in ni ways then P has n1(n2)...nm solutions.
+
+Proof #1 Induction
+A(n) - "[n] has precisely 2^n subsets"
+
+Induction base: A(1)
+Induction step: A(n) => A(n+1) 

@@ -1,0 +1,26 @@
+Rachel Hwang
+CMSC 254
+hw2
+
+The files in this directory consist of
+
+linear.py 
+    The linear perceptron.
+    [run "python linear.py x", where x = 0 for online and x = 1 for batch]
+
+
+kernel.py 
+    The kernel perceptron.
+    [run "python kernel.py x y", x = 0 for online, x = 1 for batch. y = sigma]
+
+
+predict.linear.batch
+    The predictions made by the linear perceptron on the test200.databw.35
+
+
+predict.kernel.batch
+    The predictions made by the kernel perceptron on the test200.databw.35
+
+
+hw2.pdf
+    Assigned problems and perceptron writeup.

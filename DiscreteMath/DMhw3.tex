@@ -1,0 +1,91 @@
+ \documentclass[12pt]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=0.75in]{geometry}
+
+\title{Assignment 3}
+\author{Rachel Hwang}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item \emph{How many ways are there to choose nine cards out of a standard deck of 52 cards in such a way that every suit is represented in the selection at least twice?} \\
+\\
+This problem is equivalent to asking, how many ways can you choose two cards from three suits and then choose three cards from one suit? \\
+\\
+The ways chose two cards from each of three suits is simply
+\begin{align}
+\nonumber \binom{13}{2} \cdot \binom{13}{2} \cdot \binom{13}{2} &= \frac{13!\cdot 13!\cdot 13!}{11! \cdot 11! \cdot 11! \cdot 8}
+\end{align}
+Next, we choose three cards from the remaining suit, which is simply $\binom{13}{3}$. by the product rule, this gives us
+\begin{align}
+\nonumber\binom{13}{3} \cdot \binom{13}{2} \cdot \binom{13}{2} \cdot \binom{13}{2} &= \frac{13!\cdot 13!\cdot 13!\cdot 13!}{11! \cdot 11! \cdot 11! \cdot 10!\cdot 3! \cdot 8}
+\end{align}
+number of ways to choose three cards of one suit and two of three suits. Finally, we must consider that any of the four suits can be the one from which three cards are chosen. There are $\binom{4}{1}$ ways to chose which suit this is, so again by the product rule, the total number of ways to pick nine cards with each suit represented at least twice is
+\begin{align}
+\nonumber 4 \cdot \binom{13}{2} \cdot \binom{13}{2} \cdot \binom{13}{2} \cdot \binom{13}{3} &= \frac{13!\cdot 13! \cdot 13! \cdot 13! \cdot 4}{11!\cdot 11!\cdot 11!\cdot 10! \cdot 8 \cdot 3!} = 542,887,488
+\end{align}
+\\
+
+\item \emph{How many solutions in positive integers are there to the equation $x_1 \cdot x_2 \cdot x_3 \cdot x_4 = 2^{20} \cdot 13^{13}$?} \\
+\\
+Since our $x$'s must multiply to $ 2^{20} \cdot 13^{13}$, each $x_i =  2^{j_i} \cdot 13^{k_i}$ where $j_i \leq 20$, $k_i \leq 13$, and $\sum\limits_{i=1}^4 j_i = 20$, and $\sum\limits_{i=1}^4 k_i = 13$. We are trying to count how many way we can set values of $j_i$ and $k_i$. We can also think of this as having 20 2's and 13 13's, and counting the ways to distribute them as factors. Since we can consider 2's and 13's seperately, by the product rule this is (ways to distribute 2's) $\cdot$ (ways to distribute 13's). This is equivalent to (ways to distribute 20 indistiguishable balls among 4 distinguishable boxes) $\cdot$ (ways to distribute 13 indistiguishable balls among 4 distinguishable boxes). There are $C(n+r-1,n-1)$ ways to place $r$ indistinguishable objects into $n$ distinguishable boxes (Rosen 6.5, ex.9). Therefore, the number of ways to distribute our factors is 
+\begin{align}
+\nonumber \binom{23}{3} \cdot \binom{16}{3} &= \frac{23! \cdot 16!}{21! \cdot 13! \cdot 3! \cdot 3!} = 47,226.67
+\end{align}
+\\
+
+\item \emph{Recall that $P_r(n)$ is the number of representations $n = n_1 + \dots + n_r$ with $n_1 \geq \dots \geq n_r \geq 1$. Which of the two numbers $P_r(n)$ and $P_{r+1}(n + 2)$ is larger?} \\
+\\
+$P_r(n)$ counts the number of ways to partition a set of size $n$ into $r$. Given any single such partition configuration counted in $P_r(n)$, we can modify it by adding on one more partition of size two (imagine tacking on a bubble to the outside of our set), the (r+1)th partition. In other words, for any values of $n = n_1 + \dots + n_r$ with $n_1 \geq \dots \geq n_r \geq 1$, we can always make an equation $n+2 = n_1 + \dots + n_r+n_{r+1}$, where $n_{r+1} = 2$. This creates a representation counted by $P_{r+1}(n + 2)$. Therefore, since we can make a representation of type $P_{r+1}(n + 2)$ for every $P_r(n)$, we know that $P_{r+1}(n + 2) \geq P_r(n)$. \\
+\\
+Next, consider the representation counted by $P_r(n)$ which maximizes $n_1$, where $n = n_1 + \dots + n_r$ and $n_2$ through $n_r$ are all 1. In this representation, we may add 1 to the value of $n_1$ and also add on an additional, new parition with the value 1. This gives us $n+2=(n_1+1)+\dots+n_r+n_{r+1}$, where $n_2$ through $n_{r+1}$ are equal to 1. This is a represenation counted by $P_{r+1}(n + 2)$, however it is impossible to make or count as a $P_r(n)$ representation, since the representation we were modifying had already maximized $n_1$ where $n = n_1 + \dots + n_r$ and $n_1 \geq \dots \geq n_r \geq 1$. This means that we have found a modification that $P_r(n)$ cannot make. Since we previously established that $P_{r+1}(n + 2) \geq P_r(n)$, we now know that $P_{r+1}(n + 2) > P_r(n)$.
+
+
+\item \emph{Construct an example of a 10-element set $A$ of positive integers in the range [1 \dots 1000] such that all $2^{10}$ subset sums $\Sigma_{a\in S} a$ (S ranges over all subsets of A) are pairwise different.} \\
+\begin{align}
+\nonumber A&=\{2^i|0\leq i \leq 9\} = \{1, 2, 4, 8, 16, 32, 64, 128, 256, 512\}
+\end{align}
+Proof: \\
+For each element $a_i$ of this set, no combination of any of the elements of $A$ can sum to its value. In other words, for any $a_i$ there is no subset $S$ of $A$ such that $\sum\limits_{a\in S} a = a_i$. To see this, let's think about why we cannot construct such an $S$. First, we know that in order for elements to sum to $a_i$, because all elements of $A$ are positive, any element $a_j$ of a hypothetical $S$ must be less than or equal to $a_i$. If there is $a_j > a_i$, then the sum of $S$ is already larger than $a_i$, $\Sigma_{a\in S} a > a_i$ and so cannot be valid. Since we know $S$ cannot contain elements $> a_i$, let us look at the maximum value that can be created from all $a_j < a_i$. We exclude $a_j = a_i$ since $a_i + anything > a_i$. By the construction of our set, all $a_j < a_i$ sum to
+\begin{align}
+\nonumber\sum\limits_{j=0}^{i-1} 2^j &= 2^i-1
+\end{align}
+so we know that for $S$ when all $a_j < a_j$, $\Sigma_{a\in S} a < a_i$. Since no $S$ including $a_j > a_i$ is valid and no combination of $a_j < a_i$ is valid, the only subset of $A$ yielding the value $a_i$ is $\{a_i\}$. \\
+\\
+We may use the same logic to prove that for any $S \subseteq A$, if $\Sigma_{a\in S} a = \Sigma_{a\in S'} a$, then $S = S'$. Given some $S$, let $a_m$ be the maximum element. Now let us try to construct an equal subset $S'$. In choosing the elements of $S'$, we must exclude all $a_j > a_m$, because as we have shown above, if there is some $a_j > a_m$, then $\Sigma_{a\in S} < a_j$. As for $a_j < a_m$, we use the same logic in reverse: the sum of all elements less than $a_m$ in total are still less than $a_m$, so if we add all the $a_j$ less than $a_m$ to $S'$, $\Sigma_{a\in S'} < a_m$, and so $\Sigma_{a\in S'} < \Sigma_{a\in S}$. Adding all of the elements < $a_m$ to $S'$ at this step also means that we will not be able to use them to sum to the values of the other, smaller elements in $S$, if any. Therefore, the only valid choice of element $\in S'$ is $a_m$. We may apply this logic to $a_m-1$, the next largest number in $S$, and so on, each time forced to add $a_j = a_{m-i}$ to $S'$ for the (i+1)th largest number. This will give us $S = S'$.\\
+\\
+
+\item \emph{A set $\{a_1, \dots a_n\}$ of positive integers is nice iff there are no non-trival (i.e. those in which at least one component is different from 0) solutions to the equation $a_1x_1 + \dots + a_nx_n = 0$ with $x_1, \dots x_n \in \{-1,0,1\}$. Prove that any nice set with $n$ elements necessarily contains at least one element that is $\geq \frac{2^n}{n}$.} \\
+\\
+Proof: \\
+A set $A$ is not 'nice' if $a_1x_1 + \dots + a_nx_n = 0$, where all $x_i \in \{-1,0,1\}$, and there is at least one $x_i \neq 0$. Since $A$ is a set of positive integers, a not nice set has at least one $x_i = 1$ and one $x_j = -1$, since there is no other way for positive integers to sum to 0. This means that for a not nice set, there is some arrangement of the elements of $A$ such that 
+\begin{align}
+0 &= 0 \cdot(a_1 + \dots + a_i) + 1 \cdot (a_{i+1} + \dots + a_j) -1 \cdot (a_{j+1} + \dots + a_k) \\
+\nonumber (a_{i+1} + \dots + a_j) &= (a_{j+1} + \dots + a_k)
+\end{align}
+In other words, we must be able find two subsets $B, C \subset A$ such that $\sum\limits_{i=1}^{n}b_i = \sum\limits_{i=1}^{n}c_i$. (Let us call the sum of all elements in a subset $B$, $\Sigma_{b_i \in B}b_i$, the \emph{subset sum} of $B$). Conversely, if set $A$ \emph{is} nice, this means that the subset sum of $B$ is not equal to subset sum of $C$ for any choices of $B, C \subset A$. \\
+\\
+Let's think about the ways to chose subsets of $A$ for use in equation (1). It would first appear that we only want to chose subsets $B$ and $C$ of $A$ such that they are disjoint, in order to satisfy the equation. However, we see that even if $B$ and $C$ are not disjoint, that is, they have one or more elements in common, $B$ and $C$ must still have different subset sums. For example, given the not nice set $X = {x_1, x_2, x_3}$, where subset sum of $\{x_1, x_2\} =$ sum of $\{x_1, x_3\}$, we can simply remove $\{x_1, x_2\} \cap \{x_1, x_3\}$ from both sets. Since in removing the intersection we have subtracted the same value from both subsets sums, we know that subset sum $\{x_2\} =$ sum $\{x_3\}$, and we can plug this into our equation to obtain $0 = 0 \cdot (x_1) + 1 \cdot (x_2) -1 \cdot (x_3)$. In other words, if we chose subsets $B$ and $C$ such that they are overlapping subsets of $A$, we can remove all the elements in their intersection and know that the relationship of their subset sums will remain unchanged.\\
+\\
+So since we know that in a nice set $A$ can have no subsets $B$ and $C$ where $B \neq C$ and subset sum $B$ equals sum of $C$, \emph{the subset sum of each subset of $A$ must be unique}. There are $2^n$ different subsets of $A$, so there must be $2^n$ unique subset sums.\\
+\\
+Because we are working with the positive integers, the minimum possible subset sum is 1. If each subset sum is different, the next largest subset sum is at least 1 larger, so 2 at the minimum. The next largest is 3 and so on. This tells us that the subset sum of the largest subset, the $2^n$ th subset, is equal to $2^n$ at the minimum in a nice set.\\
+\\
+The largest subset of $A$ is $C(n, n)$, simply $A$ itself. As we have determined that the largest subset value of a nice set must be $\geq 2^n$, we now know that if  $a_1x_1 + \dots + a_nx_n \geq 2^n$. \\
+\\
+Finally, we prove that at least one element of $A, a_i > \frac{2^n}{n}$. By way of contradiction, suppose that for all elements $a_i$ in a nice set $A =\{a_1, \dots a_n\}$, $a_i < \frac{2^n}{n}$. Then $\sum\limits_{i=1}^n a_i < 2^n$. This contradicts what we have proven about the minimum value of the greatest subset sum, so by contradiction, if $A$ is nice, there must be at least one element in it $\geq \frac{2^n}{n}$.
+
+
+\end{enumerate}
+
+
+
+\end{document}

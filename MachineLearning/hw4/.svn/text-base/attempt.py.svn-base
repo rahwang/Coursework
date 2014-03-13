@@ -1,0 +1,242 @@
+import string, os, sys
+import random
+
+# get file name                                                                 
+myfile = 'alice.txt'
+
+f = open(myfile, 'r')
+
+# Get clean word list
+words = []
+words_clean = []
+for line in f:
+    words.extend(line.split())
+exclude = string.punctuation
+for word in words:
+    val = word
+    val = val.translate(string.maketrans("",""), exclude)
+    val = val.lower()
+    val = val.lstrip('0123456789')
+    if val != None:
+        val = '#' + val + '#'
+    words_clean.append(val)
+words_clean = filter(None, words_clean)
+
+# Letter occurance dictionary
+occurances = {}
+for word in words_clean:
+    for l in word:
+        if l in occurances.keys():
+            occurances[l] += 1
+        else:
+            occurances[l] = 1
+
+# Now build HMM: initial parameters
+omega = []
+pi = []
+theta = []
+
+# Initialize HMM with randomly generated pi, transtion and emission values
+def initialize():
+    sum_p = 0
+    for st1 in range(num_st):
+         
+        # Pi probabilities
+        pi.append(random.random())
+        sum_p += pi[st1]
+
+        # Store state transition probabilities
+        sum_t = 0
+        row_t = []
+        for index in range(num_st):
+            row_t.append(random.random())
+            sum_t += row_t[index]
+        for st2 in range(num_st):
+            row_t[st2] /= sum_t
+        theta.append(row_t) 
+
+        # Emission probabilities
+        sum_e = 0
+        row_e = {}
+        for l in occurances.keys():
+            row_e[l] = random.random()
+            sum_e += row_e[l] 
+        for l in occurances.keys():
+            row_e[l] /= sum_e
+        omega.append(row_e)
+
+    for i in range(num_st):
+        pi[i] /= sum_p
+
+# Forward algorithm generating trellis. 
+# Calculates 'alpha', the probability of ending in end state given observation
+# Return a trellis[time][state] storing all values for given observation
+def fwd_trellis(observed, n_st, init, trans, em):
+    # for storage in matrix [t][state] 
+    trellis = []
+
+    # Initialize state probability
+    firstt = {}
+    for state in range(n_st):
+        firstt[state] = init[state]
+    trellis.append(firstt)
+    
+    # loop though time points (same as index in observed)
+    for t, o in enumerate(observed):
+        curr = {}
+        for state in range(n_st):
+            # Initialize state probability
+            if t == 0:
+                curr[state] = 0
+                for st in range(n_st):
+                    curr[state] += init[st] * trans[st][state] * em[st][o]
+            # Prob of reaching current st =
+            # sum[(prob of reaching previous st)*(prob of trans previous->current st) 
+            else:
+                curr[state] = 0
+                for st in range(n_st):                    
+                    curr[state] += prev[st] * trans[st][state] * em[st][o]
+
+        # Append alpha values for all states at current t to trellis
+        trellis.append(curr)
+        prev = curr
+
+    return trellis
+
+# Finally, given trellis w/ model data, calculate alpha
+def fwd(trel, t, st):
+    return trel[t][st]
+
+# Backward algorithm generating trellis.
+# Calculates 'beta', probability that the rest of observed will be produced from a given state.
+# (So at final state with final emission, that probability is 1)
+# Returns a trellis[time][state] storing all values for given observation
+def bwd_trellis(observed, n_st, trans, em):
+    # for storage in matrix [t][state]
+    trellis = []
+
+    # loop backwards though time points, will end with inital states!
+    rev_o = observed[::-1]
+    for rev_t, o in enumerate(rev_o):
+        curr = {}
+        for state in range(n_st):
+            if rev_t == 0:
+                curr[state] = 0
+                for st in range(n_st):
+                    curr[state] += trans[state][st]*em[state][o]
+            else:
+                # Prob of producing observed from cur st =
+                # sum[(prob of trans current->next st)*(prob omega[o])*(prob of reaching end st from next st)]
+                curr[state] = 0
+                for st in range(n_st):
+                    curr[state] += trans[state][st]*em[state][o]*next[st]
+
+        # Append alpha values for all states at current t to trellis. Since going backwards, append to front
+        trellis.insert(0, curr)
+        next = curr
+
+    # Add row in trellis for end state
+    lastt = {}
+    for state in range(n_st):
+        lastt[state] = 1
+
+    trellis.append(lastt)
+    return trellis
+        
+# Finally, given trellis w/ model data, calculate alpha
+def bwd(trel, t, st):
+    return trel[t][st]
+
+# get soft count of each letter at each state
+# return data stored in array[letter][originating state]
+def reestimate():
+    # Initialize temp model array values to 0
+    soft_ct_p = []
+    soft_ct_t = []
+    soft_ct_e = []
+    for n1 in range(num_st):
+        soft_ct_p.append(0)
+        temp_t = []
+        for n2 in range(num_st):
+            temp_t.append(0)
+            soft_ct_t.append(temp_t)
+            temp_e = {}
+            for emi in occurances.keys():
+                temp_e[emi] = 0
+            soft_ct_e.append(temp_e)
+
+
+    for word in words_clean:
+        observed = list(word)
+        
+        # Make trellises
+        a = fwd_trellis(observed, num_st, pi, theta, omega)
+        b = bwd_trellis(observed, num_st, theta, omega)
+        
+        # Find word probability p(O), which is just the alpha of the full string
+        #word_prob = 0 
+        #for i in range(num_st):
+        #    word_prob += bwd(b, len(word), 1) * pi[i]
+        
+        # Look at each letter
+        for t,l in enumerate(observed):
+            tot_word_prob = 0
+            for s1 in range(num_st):
+                for s2 in range(num_st):
+                    tot_word_prob += fwd(a, t, s1) * theta[s1][s2] * omega[s1][l] * bwd(b, t+1, s2)
+            
+            # Look at each state transition
+            for st1 in range(num_st):
+                for st2 in range(num_st):
+                
+                    ct = (fwd(a, t, st1) * theta[st1][st2] * omega[st1][l] * bwd(b, t+1, st1))/tot_prob
+                    
+                    # For inital state
+                    if t == 0:
+                        soft_ct_p[st1] += ct
+                    # For letter soft count
+                    soft_ct_e[st1][l] += ct
+                    # For transition soft count
+                    soft_ct_t[st1][st2] += ct
+
+    # Sum soft counts for pi, emissions and transitions,
+    # then update parameter arrays with new probability values
+    sum_p = 0
+    for x in range(num_st):
+        sum_p += soft_ct_p[x]
+    
+        sum_t = 0
+        for y in range(num_st): 
+            sum_t += soft_ct_t[x][y]
+        for yy in range(num_st):
+            theta[x][yy] /= soft_ct_t[x][yy]/sum_t
+          
+        sum_e = 0
+        for z in occurances.keys():
+            sum_e += soft_ct_e[x][z]
+        for zz in occurances.keys():
+            omega[x][zz] = soft_ct_e[x][zz]/sum_e
+
+    for xx in range(num_st):
+        pi[xx] = soft_ct_p[xx]/sum_p
+            
+# Main: actual calculation!
+num_st = 2
+initialize()
+for i in range(50):
+    reestimate()
+
+l1 = []
+l2 = []
+for e in occurances.keys():
+    if omega[0][e] > omega[1][e]:
+        l1.append(e)
+    else:
+        l2.append(e)
+
+print l1
+print l2
+
+
+
+

@@ -1,5 +1,8 @@
 /* A message passing algorithm for de-noising images.
- * This program
+ * This program reads in an image, noises it, runs the algorithm and outputs the resulting de-noised image
+ * a file. It also prints out the error rate of the de-noising process by comparing the new image to the
+ * original.
+ *
  * Run with
  * $ make (or make clean; make)
  * $ ./message [INPUT-FILE] [N-VALUE] [THETA] [MU]

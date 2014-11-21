@@ -24,7 +24,7 @@
 int N;
 float theta;
 
-/* 
+/* Node object containing array for storing neighbor cell messages */
 typedef struct node{
   // array vals for left, up, right, down, top
   float *ms[2];

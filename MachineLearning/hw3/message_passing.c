@@ -1,3 +1,14 @@
+/* A message passing algorithm for de-noising images.
+ * This program
+ * Run with
+ * $ make (or make clean; make)
+ * $ ./message [INPUT-FILE] [N-VALUE] [THETA] [MU]
+ * 
+ * N-VALUE: the number of iterations to run
+ * THETA (0.0 - 1.0): the influence that the color of a cell's neighbors have on its coloring
+ * MU (0.0 - 1.0): percentage of cells to flip when noising. 
+ */
+   
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,13 +24,14 @@
 int N;
 float theta;
 
+/* 
 typedef struct node{
   // array vals for left, up, right, down, top
   float *ms[2];
 } node;
 
 
-/* Pretty print matrix */
+/* Pretty print a matrix */
 void printM(int **m, int n) {
   int i, j;
   printf("\n");
@@ -50,7 +62,7 @@ int compareM(int **a, int **b, int n) {
   return err;
 }
 
-
+/* Read in a matrix from specified file and store in given matrix m */
 void readM(int **m, char *fname)
 {
     int data;
@@ -93,7 +105,7 @@ void writeM(int **m, char *fname, int n)
   fclose(dst);
 }
 
-
+/* Return a new int matrix */
 int **newM() 
 {
   int i;
@@ -104,7 +116,7 @@ int **newM()
   return new;
 }
 
-
+/* Initialize a node */
 void initNode(node *new) 
 {
   int i, j;
@@ -119,7 +131,7 @@ void initNode(node *new)
     } 
 }
 
-
+/* Create a new node */
 node **newNodeM() 
 {
   int i, j;
